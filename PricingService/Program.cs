@@ -7,6 +7,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using PricingService.Implementation;
 using PricingService.Implementation.Data;
+using Steeltoe.Discovery.Client;
 
 namespace PricingService;
 
@@ -31,6 +32,9 @@ public class Program
                 })
                 .ConfigureServices((hostContext, services) =>
                 {
+                    // Add Steeltoe Discovery Client for Eureka registration
+                    services.AddDiscoveryClient(hostContext.Configuration);
+
                     services.AddControllers().AddNewtonsoftJson();
                     services.AddEndpointsApiExplorer();
                     services.AddSwaggerGen();
@@ -52,6 +56,9 @@ public class Program
                         app.UseSwagger();
                         app.UseSwaggerUI();
                     }
+
+                    // UseDiscoveryClient() is obsolete in Steeltoe 3.x - registration happens automatically
+                    // app.UseDiscoveryClient();
 
                     app.UseRouting();
                     app.UseEndpoints(endpoints =>
