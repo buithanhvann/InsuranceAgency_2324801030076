@@ -9,10 +9,17 @@
   <ItemGroup>
     <PackageReference Include="MediatR" Version="12.4.1" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.1" />
+    <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="8.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="8.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="8.0.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.2.0" />
+    <PackageReference Include="Elastic.Clients.Elasticsearch" Version="8.12.0" />
+    <PackageReference Include="EasyNetQ" Version="7.8.0" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\DashboardService.Api\DashboardService.Api.csproj" />
+    <ProjectReference Include="..\PolicyService.Api\PolicyService.Api.csproj" />
   </ItemGroup>
 
 </Project>

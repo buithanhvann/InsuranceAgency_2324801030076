@@ -16,11 +16,14 @@
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="Steeltoe.Discovery.Eureka" Version="3.2.4" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.6.2" />
+    <PackageReference Include="Elastic.Clients.Elasticsearch" Version="8.12.0" />
+    <PackageReference Include="EasyNetQ" Version="7.8.0" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\DashboardService.Api\DashboardService.Api.csproj" />
     <ProjectReference Include="..\DashboardService.Implementation\DashboardService.Implementation.csproj" />
+    <ProjectReference Include="..\PolicyService.Api\PolicyService.Api.csproj" />
   </ItemGroup>
 
 </Project>

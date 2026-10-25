@@ -4,6 +4,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using DashboardService.Implementation;
+using DashboardService.Implementation.Messaging.RabbitMq;
 using Steeltoe.Discovery.Client;
 
 namespace DashboardService;
@@ -25,6 +26,7 @@ public class Program
                     config.SetBasePath(hostingContext.HostingEnvironment.ContentRootPath)
                         .AddJsonFile("appsettings.json", true, true)
                         .AddJsonFile($"appsettings.{hostingContext.HostingEnvironment.EnvironmentName}.json", true, true)
+                        .AddJsonFile("appsettings.docker.json", true, true)
                         .AddEnvironmentVariables();
                 })
                 .ConfigureServices((hostContext, services) =>
@@ -36,6 +38,7 @@ public class Program
                     services.AddSwaggerGen();
 
                     services.AddDashboardService();
+                    services.AddDashboardInfrastructure(hostContext.Configuration);
                 })
                 .Configure(app =>
                 {
@@ -51,6 +54,8 @@ public class Program
                     {
                         endpoints.MapControllers();
                     });
+
+                    app.UseRabbitListeners(new List<Type> { typeof(PolicyService.Api.Events.PolicyCreated) });
                 });
             });
     }
