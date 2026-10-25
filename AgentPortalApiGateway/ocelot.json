@@ -126,6 +126,74 @@
       "RouteClaimsRequirement": {
         "userType": "SALESMAN"
       }
+    },
+    {
+      "DownstreamPathTemplate": "/api/Payments/{everything}",
+      "DownstreamScheme": "http",
+      "UpstreamPathTemplate": "/api/Payments/{everything}",
+      "ServiceName": "PaymentService",
+      "UpstreamHttpMethod": [
+        "Get",
+        "Post"
+      ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "ApiSecurity",
+        "AllowedScopes": []
+      },
+      "RouteClaimsRequirement": {
+        "userType": "SALESMAN"
+      }
+    },
+    {
+      "DownstreamPathTemplate": "/api/Chat/{everything}",
+      "DownstreamScheme": "http",
+      "UpstreamPathTemplate": "/api/Chat/{everything}",
+      "ServiceName": "ChatService",
+      "UpstreamHttpMethod": [
+        "Get",
+        "Post"
+      ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "ApiSecurity",
+        "AllowedScopes": []
+      },
+      "RouteClaimsRequirement": {
+        "userType": "SALESMAN"
+      }
+    },
+    {
+      "DownstreamPathTemplate": "/api/Auth/{everything}",
+      "DownstreamScheme": "http",
+      "UpstreamPathTemplate": "/api/Auth/{everything}",
+      "ServiceName": "AuthService",
+      "UpstreamHttpMethod": [
+        "Get",
+        "Post"
+      ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "ApiSecurity",
+        "AllowedScopes": []
+      },
+      "RouteClaimsRequirement": {
+        "userType": "SALESMAN"
+      }
+    },
+    {
+      "DownstreamPathTemplate": "/api/Documents/{everything}",
+      "DownstreamScheme": "http",
+      "UpstreamPathTemplate": "/api/Documents/{everything}",
+      "ServiceName": "DocumentService",
+      "UpstreamHttpMethod": [
+        "Get",
+        "Post"
+      ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "ApiSecurity",
+        "AllowedScopes": []
+      },
+      "RouteClaimsRequirement": {
+        "userType": "SALESMAN"
+      }
     }
   ],
   "GlobalConfiguration": {
