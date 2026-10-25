@@ -1,4 +1,5 @@
 using DashboardService.Api.Queries.Dtos;
+using MediatR;
 
 namespace DashboardService.Api.Queries;
 
@@ -10,7 +11,7 @@ public enum TimeUnit
     Year
 }
 
-public class GetTotalSalesQuery
+public class GetTotalSalesQuery : IRequest<GetTotalSalesResult>
 {
     public string? ProductCode { get; set; }
     public DateTime SalesDateFrom { get; set; }
@@ -23,7 +24,7 @@ public class GetTotalSalesResult
     public Dictionary<string, SalesSummaryDto> PerProductTotal { get; set; } = new();
 }
 
-public class GetAgentsSalesQuery
+public class GetAgentsSalesQuery : IRequest<GetAgentsSalesResult>
 {
     public DateTime SalesDateFrom { get; set; }
     public DateTime SalesDateTo { get; set; }
@@ -34,7 +35,7 @@ public class GetAgentsSalesResult
     public Dictionary<string, SalesSummaryDto> PerAgentTotal { get; set; } = new();
 }
 
-public class GetSalesTrendsQuery
+public class GetSalesTrendsQuery : IRequest<GetSalesTrendsResult>
 {
     public DateTime SalesDateFrom { get; set; }
     public DateTime SalesDateTo { get; set; }

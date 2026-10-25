@@ -20,6 +20,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\DashboardService.Api\DashboardService.Api.csproj" />
+    <ProjectReference Include="..\DashboardService.Implementation\DashboardService.Implementation.csproj" />
   </ItemGroup>
 
 </Project>

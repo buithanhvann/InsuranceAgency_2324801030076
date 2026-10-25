@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using DashboardService.Implementation;
 using Steeltoe.Discovery.Client;
 
 namespace DashboardService;
@@ -34,8 +35,7 @@ public class Program
                     services.AddEndpointsApiExplorer();
                     services.AddSwaggerGen();
 
-                    // DashboardService only has API contracts, no Implementation project
-                    // services.AddDashboardService();
+                    services.AddDashboardService();
                 })
                 .Configure(app =>
                 {
