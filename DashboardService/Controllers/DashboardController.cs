@@ -1,3 +1,6 @@
+using System.Threading.Tasks;
+using DashboardService.Api.Queries;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DashboardService.Controllers;
@@ -6,16 +9,29 @@ namespace DashboardService.Controllers;
 [Route("api/[controller]")]
 public class DashboardController : ControllerBase
 {
-    [HttpPost]
-    public IActionResult Post([FromBody] object request)
+    private readonly IMediator bus;
+
+    public DashboardController(IMediator bus)
     {
-        return Ok(new { Service = "DashboardService", Status = "Dashboard data returned" });
+        this.bus = bus;
     }
 
-    [HttpGet("stats")]
-    public IActionResult GetStats()
+    [HttpPost("agents-sales")]
+    public async Task<GetAgentsSalesResult> AgentsSales([FromBody] GetAgentsSalesQuery query)
     {
-        return Ok(new { Service = "DashboardService", Stats = new { TotalPolicies = 0, TotalAgents = 0, TotalRevenue = 0m } });
+        return await bus.Send(query);
+    }
+
+    [HttpPost("total-sales")]
+    public async Task<GetTotalSalesResult> TotalSales([FromBody] GetTotalSalesQuery query)
+    {
+        return await bus.Send(query);
+    }
+
+    [HttpPost("sales-trends")]
+    public async Task<GetSalesTrendsResult> SalesTrends([FromBody] GetSalesTrendsQuery query)
+    {
+        return await bus.Send(query);
     }
 }
 

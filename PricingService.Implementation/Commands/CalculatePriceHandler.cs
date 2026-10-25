@@ -15,7 +15,6 @@ namespace PricingService.Commands;
 public class CalculatePriceHandler : IRequestHandler<CalculatePriceCommand, CalculatePriceResult>
 {
     private readonly IDataStore dataStore;
-    private readonly CalculatePriceCommandValidator validator = new();
 
     public CalculatePriceHandler(IDataStore dataStore)
     {
@@ -24,12 +23,6 @@ public class CalculatePriceHandler : IRequestHandler<CalculatePriceCommand, Calc
 
     public async Task<CalculatePriceResult> Handle(CalculatePriceCommand request, CancellationToken cancellationToken)
     {
-        var validationResult = await validator.ValidateAsync(request, cancellationToken);
-        if (!validationResult.IsValid)
-        {
-            throw new ValidationException(validationResult.Errors);
-        }
-
         var tariff = await dataStore.GetTariffAsync(request.ProductCode);
         if (tariff == null)
         {

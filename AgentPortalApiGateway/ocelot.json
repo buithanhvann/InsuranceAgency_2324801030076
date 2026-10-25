@@ -162,9 +162,9 @@
       }
     },
     {
-      "DownstreamPathTemplate": "/api/Auth/{everything}",
+      "DownstreamPathTemplate": "/api/User/{everything}",
       "DownstreamScheme": "http",
-      "UpstreamPathTemplate": "/api/Auth/{everything}",
+      "UpstreamPathTemplate": "/api/User/{everything}",
       "ServiceName": "AuthService",
       "UpstreamHttpMethod": [
         "Get",

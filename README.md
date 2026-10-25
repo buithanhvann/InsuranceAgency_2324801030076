@@ -50,12 +50,36 @@ Moi host project:
   - `Eureka.Client.ServiceUrl`: `http://localhost:8761/eureka/`
   - `Eureka.Instance.HostName`: `host.docker.internal` (de container goi duoc host)
   - `Eureka.Instance.Port`: Port cua service
-  - `Eureka.Instance.InstanceId`: `${ServiceName}:${random.value}`
+  - `Eureka.Instance.InstanceId`: co the bo trong (Steeltoe tu tao `host:Service:port`). Luu y: `${random.value}` la placeholder cua Spring Boot, Steeltoe gui nguyen van — khong phai loi build.
 - **Kiem tra**: Chay tat ca services → truy cap http://localhost:8761 → thay 9 services hien thi `UP`
+
+## 3.1) BTH6 - Task #1..#4 (Ocelot Gateway + Auth + Chat + Dashboard) — DA DAT
+- **Task #1 (API Gateway)**:
+  - Packages: `Ocelot` 23.3.3, `Ocelot.Provider.Eureka`, `Ocelot.Cache.CacheManager`.
+  - `Program.cs`: `AddOcelot().AddEureka().AddCacheManager(...)`, `UseUrls` (localhost:8099, trong container `http://+:8099`).
+  - `appsettings.json`: `Spring.Application.Name = Agent-Portal-Api-Gateway`; `Eureka.Client` (`ServiceUrl`, `ShouldRegisterWithEureka=false`, `ValidateCertificates=false`).
+  - `ocelot.json`: `GlobalConfiguration` (RequestIdKey, AdministrationPath, UseServiceDiscovery, Eureka host/port) + Routes cho 9 service. Ocelot 23 dung key `"Routes"` (khong dung `"ReRoutes"` cua ban cu).
+  - Route Auth: `/api/User/{everything}` -> `AuthService` (khop voi client goi `/api/User`).
+- **Task #2 (AuthService)**:
+  - `Controllers/UserController.cs` (`POST api/User`) tra **JWT that** (khong con token gia).
+  - `Domain/` (`AuthService.cs`, `AuthRequest`, `AuthResult`, `InsuranceAgent`, `IInsuranceAgents`), `DataAccess/InsuranceAgentsInMemoryDb.cs` (admin/admin, jimmy.solid/secret, danny.solid/secret).
+  - `Program.cs`: JWT Bearer, CORS, DI, `AddDiscoveryClient`; `AppSettings` (Secret, AllowedAuthOrigins).
+- **Task #3 (ChatService)**:
+  - SignalR hub `/agentsChat` (JWT qua `access_token` query), `NameUserIdProvider`.
+  - `api/Notification` + `SendNotificationCommand/Handler`.
+  - RabbitMQ: `RabbitEventListener` + `PolicyCreatedHandler` (khi co policy moi -> ban `ReceiveNotification` len chat).
+  - `Program.cs`: SignalR, JWT, CORS, Rabbit listeners; `appsettings` co `AppSettings` + `RabbitMqOptions`.
+- **Task #4 (DashboardService)**:
+  - `Controllers/DashboardController.cs` that (khong con stub): `POST api/Dashboard/total-sales`, `agents-sales`, `sales-trends` -> MediatR + Elasticsearch.
+  - `DashboardService.Implementation`: handlers/queries, Elastic adapter, Rabbit listener, seed data.
+- **Da kiem tra runtime**:
+  - `POST /api/User` (admin/admin) -> 200 + JWT.
+  - Chat `GET /info`, `/health` -> 200; hub `/agentsChat` da map.
+  - Dashboard 3 endpoint -> 200 (total-sales tra ve 939 policies, agents-sales theo `AgentLogin`, sales-trends theo `Unit`).
 
 ## 4) Build
 - File build: `BTH4-Build.bat` (hoac `dotnet build InsuranceAgency.sln`).
-- Bien ban: `BuildLog.txt` → **0 Error, 11 Warning** (warning co san tu Steeltoe/Blazor template, khong phai loi).
+- Bien ban: `BuildLog.txt` → **0 Error, 73 Warning** (warning co san tu Steeltoe/Blazor template, khong phai loi).
 - Chup man hinh doan `Build succeeded / 0 Error(s)` trong `BuildLog.txt` de nop San pham #3.
 
 ## 5) San pham nop

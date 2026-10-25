@@ -1,3 +1,4 @@
+using System;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -25,9 +26,15 @@ public class Program
                 {
                     config.SetBasePath(hostingContext.HostingEnvironment.ContentRootPath)
                         .AddJsonFile("appsettings.json", true, true)
-                        .AddJsonFile($"appsettings.{hostingContext.HostingEnvironment.EnvironmentName}.json", true, true)
-                        .AddJsonFile("appsettings.docker.json", true, true)
-                        .AddEnvironmentVariables();
+                        .AddJsonFile($"appsettings.{hostingContext.HostingEnvironment.EnvironmentName}.json", true, true);
+
+                    // Only apply docker overrides when actually running inside a container.
+                    if (Environment.GetEnvironmentVariable("DOTNET_RUNNING_IN_CONTAINER") == "true")
+                    {
+                        config.AddJsonFile("appsettings.docker.json", true, true);
+                    }
+
+                    config.AddEnvironmentVariables();
                 })
                 .ConfigureServices((hostContext, services) =>
                 {
