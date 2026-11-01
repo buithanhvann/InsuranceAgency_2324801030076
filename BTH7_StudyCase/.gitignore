@@ -1,0 +1,17 @@
+# Build outputs
+bin/
+obj/
+
+# Visual Studio
+.vs/
+*.user
+*.suo
+
+# NuGet
+*.nupkg
+*.nuget.props
+*.nuget.targets
+
+# Test results
+TestResults/
+*.trx
