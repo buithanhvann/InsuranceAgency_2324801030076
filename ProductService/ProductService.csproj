@@ -31,7 +31,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\ProductService.API\ProductService.API.csproj" />
+        <ProjectReference Include="ProductService.Api\ProductService.Api.csproj" />
     </ItemGroup>
 
 </Project>

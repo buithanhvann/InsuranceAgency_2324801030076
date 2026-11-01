@@ -21,7 +21,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PricingService.Implementati
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PricingService.Test", "PricingService.Test\PricingService.Test.csproj", "{17D6CC71-B982-4F81-B27D-437A3FB728B0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PolicyService.API.Secondary", "PolicyService.API\PolicyService.API.csproj", "{8CE606FE-8514-4D43-BEF7-1F192F554240}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PolicyService.API", "PolicyService.API\PolicyService.API.csproj", "{8CE606FE-8514-4D43-BEF7-1F192F554240}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PolicyService.Implementation", "PolicyService.Implementation\PolicyService.Implementation.csproj", "{F6EA68B1-1C3A-413D-B3FC-E9B140F76A0A}"
 EndProject

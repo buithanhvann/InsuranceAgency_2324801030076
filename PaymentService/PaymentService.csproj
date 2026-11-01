@@ -23,8 +23,8 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\PaymentService.API\PaymentService.API.csproj" />
-        <ProjectReference Include="..\PolicyService.API\PolicyService.API.csproj" />
+        <ProjectReference Include="PaymentService.Api\PaymentService.Api.csproj" />
+        <ProjectReference Include="PolicyService.Api\PolicyService.Api.csproj" />
     </ItemGroup>
 
 </Project>
