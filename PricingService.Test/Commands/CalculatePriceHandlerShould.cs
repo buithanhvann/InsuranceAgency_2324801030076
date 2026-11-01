@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -16,11 +16,13 @@ namespace PricingService.Test.Commands;
 
 public class CalculatePriceHandlerShould
 {
+    private readonly CalculatePriceCommandValidator validator = new CalculatePriceCommandValidator();
+
     [Fact]
     public async Task ThrowExceptionsIfTheCommandIsDefault()
     {
         var command = new CalculatePriceCommand();
-        var handler = new CalculatePriceHandler(new Mock<IDataStore>().Object);
+        var handler = new CalculatePriceHandler(new Mock<IDataStore>().Object, validator);
 
         var exception =
             await Assert.ThrowsAsync<ValidationException>(() => handler.Handle(command, CancellationToken.None));
@@ -34,7 +36,7 @@ public class CalculatePriceHandlerShould
     {
         var command = new CalculatePriceCommand
             { SelectedCovers = new List<string>(), Answers = new List<QuestionAnswer>() };
-        var handler = new CalculatePriceHandler(new Mock<IDataStore>().Object);
+        var handler = new CalculatePriceHandler(new Mock<IDataStore>().Object, validator);
 
         var exception =
             await Assert.ThrowsAsync<ValidationException>(() => handler.Handle(command, CancellationToken.None));
@@ -48,7 +50,7 @@ public class CalculatePriceHandlerShould
     public async Task ThrowAnExceptionIfTheCommandsSelectedCoversIsEmpty()
     {
         var command = new CalculatePriceCommand { ProductCode = "test", Answers = new List<QuestionAnswer>() };
-        var handler = new CalculatePriceHandler(new Mock<IDataStore>().Object);
+        var handler = new CalculatePriceHandler(new Mock<IDataStore>().Object, validator);
 
         var exception =
             await Assert.ThrowsAsync<ValidationException>(() => handler.Handle(command, CancellationToken.None));
@@ -62,7 +64,7 @@ public class CalculatePriceHandlerShould
     public async Task ThrowAnExceptionIfTheCommandsAnswersIsEmpty()
     {
         var command = new CalculatePriceCommand { ProductCode = "test", SelectedCovers = new List<string>() };
-        var handler = new CalculatePriceHandler(new Mock<IDataStore>().Object);
+        var handler = new CalculatePriceHandler(new Mock<IDataStore>().Object, validator);
 
         var exception =
             await Assert.ThrowsAsync<ValidationException>(() => handler.Handle(command, CancellationToken.None));
@@ -92,7 +94,7 @@ public class CalculatePriceHandlerShould
         var dataStoreMock = new Mock<IDataStore>();
         dataStoreMock.Setup(x => x.GetTariffAsync(command.ProductCode)).ReturnsAsync(tariff);
 
-        var handler = new CalculatePriceHandler(dataStoreMock.Object);
+        var handler = new CalculatePriceHandler(dataStoreMock.Object, validator);
 
         var calculatePriceResult = await handler.Handle(command, CancellationToken.None);
 
