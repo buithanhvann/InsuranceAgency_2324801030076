@@ -5,5 +5,5 @@ namespace DashboardService.Api.Queries;
 
 public class GetAgentsSalesResult
 {
-    public IDictionary<string, SalesDto> PerAgentTotal { get; set; }
+    public IDictionary<string, SalesDto> PerAgentTotal { get; set; } = new Dictionary<string, SalesDto>();
 }

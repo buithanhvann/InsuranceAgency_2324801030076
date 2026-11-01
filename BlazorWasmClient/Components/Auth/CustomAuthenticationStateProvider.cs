@@ -34,7 +34,7 @@ public class CustomAuthenticationStateProvider : AuthenticationStateProvider
         }
         catch (Exception ex)
         {
-            logger.LogError("Exception in auth state provider", ex);
+            logger.LogError(ex, "Exception in auth state provider");
             return await Task.FromResult(new AuthenticationState(anonymous));
         }
     }

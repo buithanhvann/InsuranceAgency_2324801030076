@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using PaymentService.Domain;
 using Xunit;
 using static Xunit.Assert;
@@ -21,7 +21,7 @@ public class PolicyAccountTest
         var account = new PolicyAccount("A", "A", "C", "C");
         account.InPayment(10M, incomeDate);
 
-        Equal(1, account.Entries.Count);
+        Single(account.Entries);
         Equal(10M, account.BalanceAt(incomeDate));
     }
 
@@ -32,7 +32,7 @@ public class PolicyAccountTest
         var account = new PolicyAccount("B", "B", "D", "D");
         account.OutPayment(10M, paymentReleaseDate);
 
-        Equal(1, account.Entries.Count);
+        Single(account.Entries);
         Equal(-10M, account.BalanceAt(paymentReleaseDate));
     }
 
@@ -43,7 +43,7 @@ public class PolicyAccountTest
         var account = new PolicyAccount("C", "C", "E", "E");
         account.ExpectedPayment(10M, dueDate);
 
-        Equal(1, account.Entries.Count);
+        Single(account.Entries);
         Equal(-10M, account.BalanceAt(dueDate));
     }
 

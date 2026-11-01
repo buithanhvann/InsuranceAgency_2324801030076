@@ -1,6 +1,8 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
+using Microsoft.Extensions.Logging;
 using ProductService.Api.Queries.Dtos;
 using ProductService.Test.TestData;
 using Xunit;
@@ -8,11 +10,22 @@ using static Xunit.Assert;
 
 namespace ProductService.Test.Controllers;
 
-public class ProductsControllerTest : IClassFixture<WebApplicationFactory<Program>>
+public class ProductServiceAppFactory : WebApplicationFactory<Program>
 {
-    private readonly WebApplicationFactory<Program> factory;
+    protected override void ConfigureWebHost(IWebHostBuilder builder)
+    {
+        builder.ConfigureLogging(logging =>
+        {
+            logging.ClearProviders();
+        });
+    }
+}
 
-    public ProductsControllerTest(WebApplicationFactory<Program> factory)
+public class ProductsControllerTest : IClassFixture<ProductServiceAppFactory>
+{
+    private readonly ProductServiceAppFactory factory;
+
+    public ProductsControllerTest(ProductServiceAppFactory factory)
     {
         this.factory = factory;
     }

@@ -1,13 +1,13 @@
-﻿using Blazorise.Localization;
+using Blazorise.Localization;
 using Microsoft.AspNetCore.Components;
 
 namespace BlazorWasmClient.Layouts;
 
 public partial class MainLayout
 {
-    [Inject] protected ITextLocalizerService? LocalizationService { get; set; }
+    [Inject] protected ITextLocalizerService LocalizationService { get; set; }
 
-    [CascadingParameter] protected Theme? Theme { get; set; }
+    [CascadingParameter] protected Theme Theme { get; set; }
 
     protected string layoutType = "fixed-header";
 
@@ -20,7 +20,7 @@ public partial class MainLayout
 
     private Task SelectCulture( string name )
     {
-        LocalizationService!.ChangeLanguage( name );
+        LocalizationService.ChangeLanguage( name );
 
         return Task.CompletedTask;
     }

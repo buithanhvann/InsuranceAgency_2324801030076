@@ -31,7 +31,7 @@ public static class MartenInstaller
     {
         var serializer = new JsonNetSerializer();
 
-        serializer.Customize(_ =>
+        serializer.Configure(_ =>
         {
             _.ContractResolver = new ProtectedSettersContractResolver();
             _.PreserveReferencesHandling = PreserveReferencesHandling.Objects;

@@ -5,7 +5,7 @@ namespace PolicyService.Api.Events;
 
 public class PolicyTerminated : INotification
 {
-    public string PolicyNumber { get; set; }
+    public string PolicyNumber { get; set; } = default!;
     public DateTime PolicyTo { get; set; }
     public decimal? AmountToReturn { get; set; }
 }

@@ -15,7 +15,7 @@ public static class JobsInstaller
         services.AddSingleton(jobsConfig);
         services.AddHangfire(config =>
         {
-            config.UsePostgreSqlStorage(jobsConfig.HangfireConnectionStringName);
+            config.UsePostgreSqlStorage(c => c.UseNpgsqlConnection(jobsConfig.HangfireConnectionStringName));
             config.UseLogProvider(new ColouredConsoleLogProvider());
         });
         services.AddScoped<InPaymentRegistrationJob, InPaymentRegistrationJob>();
@@ -26,6 +26,6 @@ public static class JobsInstaller
     public static void UseBackgroundJobs(this IApplicationBuilder app)
     {
         app.UseHangfireDashboard();
-        RecurringJob.AddOrUpdate<InPaymentRegistrationJob>(j => j.Run(), "*/1 * * * *");
+        RecurringJob.AddOrUpdate<InPaymentRegistrationJob>("in-payment-registration-job", j => j.Run(), "*/1 * * * *");
     }
 }

@@ -5,17 +5,17 @@ namespace PolicyService.Api.Events;
 
 public class PolicyCreated : INotification
 {
-    public string PolicyNumber { get; set; }
+    public string PolicyNumber { get; set; } = default!;
     public DateTime PolicyFrom { get; set; }
     public DateTime PolicyTo { get; set; }
-    public PolicyHolder PolicyHolder { get; set; }
-    public string ProductCode { get; set; }
+    public PolicyHolder PolicyHolder { get; set; } = default!;
+    public string ProductCode { get; set; } = default!;
     public decimal TotalPremium { get; set; }
-    public string AgentLogin { get; set; }
+    public string AgentLogin { get; set; } = default!;
 }
 
 public class PolicyHolder
 {
-    public string FirstName { get; set; }
-    public string LastName { get; set; }
+    public string FirstName { get; set; } = default!;
+    public string LastName { get; set; } = default!;
 }
