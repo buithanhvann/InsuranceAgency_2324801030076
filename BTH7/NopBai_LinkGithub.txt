@@ -1,0 +1,65 @@
+================================================================================
+BAI THUC HANH SO 7 - CASE STUDY CAI DAT
+KIEN TRUC MICROSERVICES TREN MOI TRUONG .NET CORE
+(BAI TOAN DAI LY BAO HIEM) - PHAN 5: LUU TRU VA TRUY CAP DU LIEU HIEU QUA VOI MARTEN
+================================================================================
+
+Sinh vien: Bui Thanh Van (2324801030076)
+Ngay: 01/11/2026
+
+--------------------------------------------------------------------------------
+DU AN DA HOAN THANH
+--------------------------------------------------------------------------------
+
+Cac project (tat ca duoc build thanh công, 0 loi):
+
+1) ProductService.Api       - DTOs, Commands, Queries cua dich vu san pham
+2) ProductService           - Controllers, Handlers, Domain, DataAccess (EF)
+3) ProductService.Test      - Test cho ProductService
+4) PaymentService.Api       - DTOs, Queries, Exceptions cua dich vu thanh toan
+5) PaymentService           - Controllers, Domain, DataAccess (Marten), Listeners, Jobs
+6) PaymentService.Test      - Test cho PaymentService
+7) PolicyService.Api        - (bo sung) Sukien PolicyCreated / PolicyTerminated
+                               can thiet de PaymentService build duoc
+
+--------------------------------------------------------------------------------
+CAc TASK DA THUC HIEN (trong Bai thuc hanh 7)
+--------------------------------------------------------------------------------
+
+Task #1: Them Marten vao du an
+- Da su dung NuGet: Install-Package Marten (phiien ban 7.19.1)
+- Da co san trong PaymentService.csproj (PackageReference Marten 7.19.1)
+
+Task #2: Bo sung code cho microservice PaymentService (3 thu muc)
+- Da bo sung: Controllers, DataAccess (Marten), Domain, Extensions, Infrastructure,
+  Init, Jobs, Listeners, Messaging, Queries
+- Da ket noi voi PolicyService.Api (sukien PolicyCreated, PolicyTerminated)
+
+Task #3: Bo sung code cho microservice ProductService (3 thu muc)
+- Da bo sung: Commands, Controllers, DataAccess (EF), Domain, Init, Mappers, Queries
+
+--------------------------------------------------------------------------------
+TRANG THAI BUILD
+--------------------------------------------------------------------------------
+
+dotnet build -c Release cho tat ca project: BUILD THANH CONG, 0 LOI.
+(Cac warning con lai la cau hanh cua NuGet/steeltoe/Marten va API cu,
+khong phai loi va khong duoc sinh vien sua.)
+
+Duong dan luu tru: C:\Users\Hi\AppData\Local\Temp\opencode\BTH7_StudyCase\
+
+--------------------------------------------------------------------------------
+YEU CAU NOP BAI
+--------------------------------------------------------------------------------
+
+- Link project tren Github (dang file .txt): 
+  (Sinh vien day len Github roi day link vao file nay)
+
+  Link Github: ________________________________________________________
+
+- Project phai build duoc, khong con loi lien quan den nhung projects da duoc bo sung:
+  DA THOA MAN (tat ca project build thanh cong, 0 loi).
+
+- Thoi han nop: chua muon 18h00 hom nay (ngay 01/11/2026).
+
+================================================================================
