@@ -3,8 +3,6 @@ using System.Net;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -12,7 +10,6 @@ using Microsoft.Extensions.Hosting;
 using PricingService.Implementation;
 using PricingService.Implementation.Data;
 using PricingService.Api.Commands;
-using FluentValidation.AspNetCore;
 using FluentValidation;
 using FluentValidation.Results;
 using Steeltoe.Discovery.Client;
@@ -43,14 +40,9 @@ public class Program
                     // Add Steeltoe Discovery Client for Eureka registration
                     services.AddDiscoveryClient(hostContext.Configuration);
 
-                    services.AddControllers(options =>
-                    {
-                        options.Filters.Add<ValidateModelFilter>();
-                    }).AddNewtonsoftJson();
-                    services.AddFluentValidationAutoValidation().AddFluentValidationClientsideAdapters();
+                    services.AddControllers().AddNewtonsoftJson();
                     services.AddValidatorsFromAssemblyContaining<CalculatePriceCommandValidator>();
                     services.AddScoped<IValidator<CalculatePriceCommand>, CalculatePriceCommandValidator>();
-                    services.AddScoped<ValidateModelFilter>();
                     services.AddEndpointsApiExplorer();
                     services.AddSwaggerGen();
                     
@@ -75,8 +67,7 @@ public class Program
                     // UseDiscoveryClient() is obsolete in Steeltoe 3.x - registration happens automatically
                     // app.UseDiscoveryClient();
 
-                    app.UseRouting();
-
+                    // Global exception handler for ValidationException - must be first middleware
                     app.Use(async (context, next) =>
                     {
                         try
@@ -92,34 +83,13 @@ public class Program
                         }
                     });
 
+                    app.UseRouting();
+
                     app.UseEndpoints(endpoints =>
                     {
                         endpoints.MapControllers();
                     });
                 });
             });
-    }
-}
-
-public class ValidateModelFilter : IAsyncActionFilter
-{
-    public async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
-    {
-        if (!context.ModelState.IsValid)
-        {
-            var errors = context.ModelState
-                .Where(e => e.Value.Errors.Count > 0)
-                .SelectMany(e => e.Value.Errors.Select(err => new
-                {
-                    PropertyName = e.Key,
-                    ErrorMessage = err.ErrorMessage
-                }))
-                .ToList();
-            
-            context.Result = new BadRequestObjectResult(new { Errors = errors });
-            return;
-        }
-        
-        await next();
     }
 }
