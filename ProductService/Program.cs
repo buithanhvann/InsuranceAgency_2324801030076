@@ -1,61 +1,48 @@
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
-using ProductService.Implementation;
+﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
+using ProductService.DataAccess.EF;
+using ProductService.Init;
 using Steeltoe.Discovery.Client;
 
-namespace ProductService;
+var builder = WebApplication.CreateBuilder(args);
 
-public class Program
+// Add services to the container.
+
+builder.Services
+    .AddControllers()
+    .AddNewtonsoftJson(options =>
+    {
+        options.SerializerSettings.Converters.Add(new StringEnumConverter());
+        options.SerializerSettings.NullValueHandling = NullValueHandling.Ignore;
+    });
+// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
+
+builder.Services.AddDiscoveryClient(builder.Configuration);
+builder.Services.AddEFConfiguration(builder.Configuration);
+builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblyContaining<Program>());
+builder.Services.AddProductDemoInitializer();
+
+var app = builder.Build();
+
+// Configure the HTTP request pipeline.
+if (app.Environment.IsDevelopment())
 {
-    public static void Main(string[] args)
-    {
-        CreateHostBuilder(args).Build().Run();
-    }
+    app.UseSwagger();
+    app.UseSwaggerUI();
+}
 
-    public static IHostBuilder CreateHostBuilder(string[] args)
-    {
-        return Microsoft.Extensions.Hosting.Host.CreateDefaultBuilder(args)
-            .ConfigureWebHostDefaults(webBuilder =>
-            {
-                webBuilder.ConfigureAppConfiguration((hostingContext, config) =>
-                {
-                    config.SetBasePath(hostingContext.HostingEnvironment.ContentRootPath)
-                        .AddJsonFile("appsettings.json", true, true)
-                        .AddJsonFile($"appsettings.{hostingContext.HostingEnvironment.EnvironmentName}.json", true, true)
-                        .AddEnvironmentVariables();
-                })
-                .ConfigureServices((hostContext, services) =>
-                {
-                    // Add Steeltoe Discovery Client for Eureka registration
-                    services.AddDiscoveryClient(hostContext.Configuration);
+app.UseHttpsRedirection();
 
-                    services.AddControllers().AddNewtonsoftJson();
-                    services.AddEndpointsApiExplorer();
-                    services.AddSwaggerGen();
+app.UseAuthorization();
 
-                    services.AddProductService();
-                })
-                .Configure(app =>
-                {
-                    var env = app.ApplicationServices.GetRequiredService<IWebHostEnvironment>();
-                    if (env.IsDevelopment())
-                    {
-                        app.UseSwagger();
-                        app.UseSwaggerUI();
-                    }
+app.MapControllers();
 
-                    // UseDiscoveryClient() is obsolete in Steeltoe 3.x - registration happens automatically
-                    // app.UseDiscoveryClient();
+app.UseInitializer();
 
-                    app.UseRouting();
-                    app.UseEndpoints(endpoints =>
-                    {
-                        endpoints.MapControllers();
-                    });
-                });
-            });
-    }
+app.Run();
+
+public partial class Program
+{
 }

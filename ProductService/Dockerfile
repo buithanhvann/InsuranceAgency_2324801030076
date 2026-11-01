@@ -1,22 +1,35 @@
-FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
-WORKDIR /app
-EXPOSE 80
-EXPOSE 443
-
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
-WORKDIR /src
-COPY ["ProductService/ProductService.csproj", "ProductService/"]
-COPY ["ProductService.API/ProductService.API.csproj", "ProductService.API/"]
-COPY ["ProductService.Implementation/ProductService.Implementation.csproj", "ProductService.Implementation/"]
-RUN dotnet restore "ProductService/ProductService.csproj"
-COPY . .
-WORKDIR "/src/ProductService"
-RUN dotnet build "ProductService.csproj" -c Release -o /app/build
+
+ENV APP_HOME /opt/app
+RUN mkdir $APP_HOME
+WORKDIR $APP_HOME
+
+COPY ProductService.Api/*.csproj $APP_HOME/ProductService.Api/
+COPY ProductService/*.csproj $APP_HOME/ProductService/
+RUN  cd $APP_HOME/ProductService && dotnet restore
+
+COPY ProductService.Api $APP_HOME/ProductService.Api/
+COPY ProductService $APP_HOME/ProductService/
+RUN cd $APP_HOME/ProductService && dotnet build
+
+COPY ProductService.Test/*.csproj $APP_HOME/ProductService.Test/
+RUN cd $APP_HOME/ProductService.Test && dotnet restore
+
+COPY ProductService.Test $APP_HOME/ProductService.Test/
+RUN cd $APP_HOME/ProductService.Test && dotnet build
+
+FROM build AS test
+WORKDIR $APP_HOME/ProductService.Test
+ENV ASPNETCORE_ENVIRONMENT=docker
+RUN dotnet test --verbosity:normal
 
 FROM build AS publish
-RUN dotnet publish "ProductService.csproj" -c Release -o /app/publish /p:UseAppHost=false
+WORKDIR $APP_HOME/ProductService
+RUN dotnet publish -c Release -o out
 
-FROM base AS final
+FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS final
 WORKDIR /app
-COPY --from=publish /app/publish .
+ENV ASPNETCORE_URLS=http://+:5030
+ENV ASPNETCORE_ENVIRONMENT=docker
+COPY --from=publish /opt/app/ProductService/out ./
 ENTRYPOINT ["dotnet", "ProductService.dll"]
