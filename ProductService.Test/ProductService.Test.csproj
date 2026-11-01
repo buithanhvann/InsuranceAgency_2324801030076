@@ -24,8 +24,8 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="ProductService.Api\ProductService.Api.csproj" />
-        <ProjectReference Include="ProductService\ProductService.csproj" />
+        <ProjectReference Include="..\ProductService.Api\ProductService.Api.csproj" />
+        <ProjectReference Include="..\ProductService\ProductService.csproj" />
     </ItemGroup>
 
 </Project>
