@@ -6,8 +6,9 @@ namespace PolicyService.Test.Domain;
 
 public static class OfferFactory
 {
-    internal static Offer NewOfferValidUntilForAgent(DateTime offerValidityEnd, string agent)
+    internal static Offer NewOfferValidUntilForAgent(DateTime offerValidityEnd, string agent, DateTime? policyFrom = null)
     {
+        var from = policyFrom ?? DateTime.Today;
         using (var timeMachine = new TimeMachine(offerValidityEnd.AddDays(-30)))
         {
             var price = new Price(new Dictionary<string, decimal>
@@ -19,8 +20,8 @@ public static class OfferFactory
             var offer = Offer.ForPriceAndAgent
             (
                 "P1",
-                DateTime.Now,
-                DateTime.Now.AddDays(5),
+                from,
+                from.AddDays(5),
                 PolicyHolderFactory.Abc(),
                 price,
                 agent
@@ -30,8 +31,9 @@ public static class OfferFactory
         }
     }
 
-    internal static Offer NewOfferValidUntil(DateTime offerValidityEnd)
+    internal static Offer NewOfferValidUntil(DateTime offerValidityEnd, DateTime? policyFrom = null)
     {
+        var from = policyFrom ?? DateTime.Today;
         using (var timeMachine = new TimeMachine(offerValidityEnd.AddDays(-30)))
         {
             var price = new Price(new Dictionary<string, decimal>
@@ -43,8 +45,8 @@ public static class OfferFactory
             var offer = Offer.ForPrice
             (
                 "P1",
-                DateTime.Now,
-                DateTime.Now.AddDays(5),
+                from,
+                from.AddDays(5),
                 PolicyHolderFactory.Abc(),
                 price
             );

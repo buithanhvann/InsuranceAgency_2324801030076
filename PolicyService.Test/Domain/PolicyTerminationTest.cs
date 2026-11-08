@@ -10,11 +10,12 @@ public class PolicyTerminationTest
     [Fact]
     public void CanTerminateActivePolicyInTheMiddleOfCoverPeriod()
     {
-        var offer = OfferFactory.NewOfferValidUntil(DateTime.Now.AddDays(5));
+        var baseDate = DateTime.Today;
+        var offer = OfferFactory.NewOfferValidUntil(baseDate.AddDays(5), baseDate);
 
         var policy = offer.Buy(PolicyHolderFactory.Abc());
 
-        var terminationResult = policy.Terminate(DateTime.Now.AddDays(3));
+        var terminationResult = policy.Terminate(baseDate.AddDays(3));
 
         PolicyAssert
             .AssertThat(policy)
