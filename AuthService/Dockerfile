@@ -19,4 +19,5 @@ RUN dotnet publish "AuthService.csproj" -c Release -o /app/publish /p:UseAppHost
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
+ENV ASPNETCORE_URLS=http://+:6060
 ENTRYPOINT ["dotnet", "AuthService.dll"]

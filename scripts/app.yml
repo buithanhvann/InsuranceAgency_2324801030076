@@ -16,6 +16,8 @@ services:
       dockerfile: AuthService/Dockerfile
     image: dotnet-auth-service
     container_name: dotnet-auth-service
+    environment:
+      - ASPNETCORE_URLS=http://+:6060
     ports:
     - 6060:6060
   
