@@ -58,7 +58,7 @@ public class Program
                 .Configure(app =>
                 {
                     var env = app.ApplicationServices.GetRequiredService<IWebHostEnvironment>();
-                    if (env.IsDevelopment())
+                    if (env.IsDevelopment() || env.IsEnvironment("docker"))
                     {
                         app.UseSwagger();
                         app.UseSwaggerUI();

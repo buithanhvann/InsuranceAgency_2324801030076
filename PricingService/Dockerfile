@@ -1,12 +1,11 @@
 FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
 WORKDIR /app
-EXPOSE 80
-EXPOSE 443
+EXPOSE 5040
 
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /src
 COPY ["PricingService/PricingService.csproj", "PricingService/"]
-COPY ["PricingService.Api/PricingService.Api.csproj", "PricingService.Api/"]
+COPY ["PricingService.API/PricingService.Api.csproj", "PricingService.API/"]
 COPY ["PricingService.Implementation/PricingService.Implementation.csproj", "PricingService.Implementation/"]
 RUN dotnet restore "PricingService/PricingService.csproj"
 COPY . .
@@ -18,5 +17,7 @@ RUN dotnet publish "PricingService.csproj" -c Release -o /app/publish /p:UseAppH
 
 FROM base AS final
 WORKDIR /app
+ENV ASPNETCORE_URLS=http://+:5040
+ENV ASPNETCORE_ENVIRONMENT=docker
 COPY --from=publish /app/publish .
 ENTRYPOINT ["dotnet", "PricingService.dll"]

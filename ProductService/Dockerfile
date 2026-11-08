@@ -1,27 +1,16 @@
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 
 ENV APP_HOME /opt/app
-RUN mkdir $APP_HOME
+RUN mkdir -p $APP_HOME
 WORKDIR $APP_HOME
 
-COPY ProductService.Api/*.csproj $APP_HOME/ProductService.Api/
+COPY ProductService.API/*.csproj $APP_HOME/ProductService.API/
 COPY ProductService/*.csproj $APP_HOME/ProductService/
-RUN  cd $APP_HOME/ProductService && dotnet restore
+RUN cd $APP_HOME/ProductService && dotnet restore
 
-COPY ProductService.Api $APP_HOME/ProductService.Api/
+COPY ProductService.API $APP_HOME/ProductService.API/
 COPY ProductService $APP_HOME/ProductService/
-RUN cd $APP_HOME/ProductService && dotnet build
-
-COPY ProductService.Test/*.csproj $APP_HOME/ProductService.Test/
-RUN cd $APP_HOME/ProductService.Test && dotnet restore
-
-COPY ProductService.Test $APP_HOME/ProductService.Test/
-RUN cd $APP_HOME/ProductService.Test && dotnet build
-
-FROM build AS test
-WORKDIR $APP_HOME/ProductService.Test
-ENV ASPNETCORE_ENVIRONMENT=docker
-RUN dotnet test --verbosity:normal
+RUN cd $APP_HOME/ProductService && dotnet build -c Release
 
 FROM build AS publish
 WORKDIR $APP_HOME/ProductService

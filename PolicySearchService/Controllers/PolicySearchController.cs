@@ -1,36 +1,27 @@
+﻿using System.Threading.Tasks;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using PolicySearchService.Api.Queries;
 
 namespace PolicySearchService.Controllers;
 
-[ApiController]
 [Route("api/[controller]")]
+[ApiController]
 public class PolicySearchController : ControllerBase
 {
-    [HttpGet]
-    public IActionResult Get()
-    {
-        return Ok(new { Service = "PolicySearchService", Status = "Running" });
-    }
-}
+    private readonly IMediator bus;
 
-[ApiController]
-[Route("info")]
-public class InfoController : ControllerBase
-{
-    [HttpGet]
-    public IActionResult Get()
+    public PolicySearchController(IMediator bus)
     {
-        return Ok(new { Service = "PolicySearchService", Version = "1.0.0" });
+        this.bus = bus;
     }
-}
 
-[ApiController]
-[Route("health")]
-public class HealthController : ControllerBase
-{
+
+    // GET api/values
     [HttpGet]
-    public IActionResult Get()
+    public async Task<ActionResult> SearchAsync([FromQuery] string q)
     {
-        return Ok(new { Status = "Healthy", Timestamp = DateTime.UtcNow });
+        var result = await bus.Send(new FindPolicyQuery { QueryText = q });
+        return new JsonResult(result);
     }
 }

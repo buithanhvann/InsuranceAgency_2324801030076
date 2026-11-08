@@ -1,22 +1,26 @@
-FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
-WORKDIR /app
-EXPOSE 80
-EXPOSE 443
-
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
-WORKDIR /src
-COPY ["PolicySearchService/PolicySearchService.csproj", "PolicySearchService/"]
-COPY ["PolicySearchService.API/PolicySearchService.API.csproj", "PolicySearchService.API/"]
-COPY ["PolicySearchService.Implementation/PolicySearchService.Implementation.csproj", "PolicySearchService.Implementation/"]
-RUN dotnet restore "PolicySearchService/PolicySearchService.csproj"
-COPY . .
-WORKDIR "/src/PolicySearchService"
-RUN dotnet build "PolicySearchService.csproj" -c Release -o /app/build
+
+ENV APP_HOME /opt/app
+RUN mkdir -p $APP_HOME
+WORKDIR $APP_HOME
+
+COPY PolicyService.API/*.csproj $APP_HOME/PolicyService.API/
+COPY PolicySearchService.API/*.csproj $APP_HOME/PolicySearchService.API/
+COPY PolicySearchService/*.csproj $APP_HOME/PolicySearchService/
+RUN cd $APP_HOME/PolicySearchService && dotnet restore
+
+COPY PolicyService.API $APP_HOME/PolicyService.API/
+COPY PolicySearchService.API $APP_HOME/PolicySearchService.API/
+COPY PolicySearchService $APP_HOME/PolicySearchService/
+RUN cd $APP_HOME/PolicySearchService && dotnet build -c Release
 
 FROM build AS publish
-RUN dotnet publish "PolicySearchService.csproj" -c Release -o /app/publish /p:UseAppHost=false
+WORKDIR $APP_HOME/PolicySearchService
+RUN dotnet publish -c Release -o out
 
-FROM base AS final
+FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS final
 WORKDIR /app
-COPY --from=publish /app/publish .
+ENV ASPNETCORE_URLS=http://+:5065
+ENV ASPNETCORE_ENVIRONMENT=docker
+COPY --from=publish /opt/app/PolicySearchService/out ./
 ENTRYPOINT ["dotnet", "PolicySearchService.dll"]

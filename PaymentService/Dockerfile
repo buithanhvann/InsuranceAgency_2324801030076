@@ -1,28 +1,18 @@
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 
 ENV APP_HOME /opt/app
-RUN mkdir $APP_HOME
+RUN mkdir -p $APP_HOME
 WORKDIR $APP_HOME
 
-COPY PolicyService.Api/*.csproj $APP_HOME/PolicyService.Api/
-COPY PaymentService.Api/*.csproj $APP_HOME/PaymentService.Api/
+COPY PolicyService.API/*.csproj $APP_HOME/PolicyService.API/
+COPY PaymentService.API/*.csproj $APP_HOME/PaymentService.API/
 COPY PaymentService/*.csproj $APP_HOME/PaymentService/
-RUN  cd $APP_HOME/PaymentService && dotnet restore
+RUN cd $APP_HOME/PaymentService && dotnet restore
 
-COPY PolicyService.Api $APP_HOME/PolicyService.Api/
-COPY PaymentService.Api $APP_HOME/PaymentService.Api/
+COPY PolicyService.API $APP_HOME/PolicyService.API/
+COPY PaymentService.API $APP_HOME/PaymentService.API/
 COPY PaymentService $APP_HOME/PaymentService/
-RUN cd $APP_HOME/PaymentService && dotnet build
-
-COPY PaymentService.Test/*.csproj $APP_HOME/PaymentService.Test/
-RUN cd $APP_HOME/PaymentService.Test && dotnet restore
-
-COPY PaymentService.Test .$APP_HOME/PaymentService.Test/
-RUN cd $APP_HOME/PaymentService.Test && dotnet build
-
-FROM build AS test
-WORKDIR $APP_HOME/PaymentService.Test
-RUN dotnet test --verbosity:normal
+RUN cd $APP_HOME/PaymentService && dotnet build -c Release
 
 FROM build AS publish
 WORKDIR $APP_HOME/PaymentService

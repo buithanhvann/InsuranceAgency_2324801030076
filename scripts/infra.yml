@@ -1,5 +1,3 @@
-version: '3'
-
 services:
   eureka:
     build: ../eureka-server
@@ -10,10 +8,10 @@ services:
 
   postgres:
     build: ../postgres
-    image: postgres
+    image: lab-postgres:11.4
     container_name: postgres
     volumes:
-      - /tmp/data/postgresql:/var/lib/postgresql/data
+      - postgres_lab_data:/var/lib/postgresql/data
     ports:
       - 5432:5432
     environment:
@@ -44,3 +42,6 @@ services:
       NAME: rabbitmq
     volumes:
       - ./rabbitmq-isolated.conf:/etc/rabbitmq/rabbitmq.config
+
+volumes:
+  postgres_lab_data:

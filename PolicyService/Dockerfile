@@ -1,22 +1,26 @@
-FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
-WORKDIR /app
-EXPOSE 80
-EXPOSE 443
-
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
-WORKDIR /src
-COPY ["PolicyService/PolicyService.csproj", "PolicyService/"]
-COPY ["PolicyService.API/PolicyService.API.csproj", "PolicyService.API/"]
-COPY ["PolicyService.Implementation/PolicyService.Implementation.csproj", "PolicyService.Implementation/"]
-RUN dotnet restore "PolicyService/PolicyService.csproj"
-COPY . .
-WORKDIR "/src/PolicyService"
-RUN dotnet build "PolicyService.csproj" -c Release -o /app/build
+
+ENV APP_HOME /opt/app
+RUN mkdir -p $APP_HOME
+WORKDIR $APP_HOME
+
+COPY PricingService.API/*.csproj $APP_HOME/PricingService.API/
+COPY PolicyService.API/*.csproj $APP_HOME/PolicyService.API/
+COPY PolicyService/*.csproj $APP_HOME/PolicyService/
+RUN cd $APP_HOME/PolicyService && dotnet restore
+
+COPY PricingService.API $APP_HOME/PricingService.API/
+COPY PolicyService.API $APP_HOME/PolicyService.API/
+COPY PolicyService $APP_HOME/PolicyService/
+RUN cd $APP_HOME/PolicyService && dotnet build -c Release
 
 FROM build AS publish
-RUN dotnet publish "PolicyService.csproj" -c Release -o /app/publish /p:UseAppHost=false
+WORKDIR $APP_HOME/PolicyService
+RUN dotnet publish -c Release -o out
 
-FROM base AS final
+FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS final
 WORKDIR /app
-COPY --from=publish /app/publish .
+ENV ASPNETCORE_URLS=http://+:5050
+ENV ASPNETCORE_ENVIRONMENT=docker
+COPY --from=publish /opt/app/PolicyService/out ./
 ENTRYPOINT ["dotnet", "PolicyService.dll"]
